@@ -1,6 +1,7 @@
 import User from '../models/user.model';
 import { IUser } from '../interfaces/user.interface';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 class UserService {
 
@@ -10,24 +11,26 @@ class UserService {
     return data;
   };
 
-  public check_emailId = async (body: any): Promise<any> => {
-    const {emailId, password} = body;
-    const retrieve_emailId = User.findOne({emailId}).exec();
-    if(retrieve_emailId){
-      return (await retrieve_emailId).password
+  public Match_Email_Password = async (emailId: string, password: string): Promise<Boolean> => {
+    const user = (await User.findOne({emailId}).exec());
+    if(user){
+      const validate = await bcrypt.compare(password, user.password);
+      if (validate){
+        return true;
+      }
+      return false;
     }
     return false;
   };
 
-  public password_check = async (body: any, check_password: string): Promise<any> => {
-    const validate = bcrypt.compare(body.password, check_password);
-    if (validate){
-      return true;
-    }
-    return false;
-  };
+  public generateToken = async(body: Object): Promise<String> => {
+    const payload = body;
+    const secretKey = "Alaska_to_Serbia";
+    const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});
+    return token 
+  }
 
-}
+};
 
 
 export default UserService;

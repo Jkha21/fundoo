@@ -12,11 +12,13 @@ class UserController {
   ): Promise<void> => {
     try {
       const data = await this.UserService.signUp(req.body);
+      const {password, ...rest_data} = req.body;
       res.status(HttpStatus.CREATED).json({
         code: HttpStatus.CREATED,
-        data: data,
+        data: rest_data,
         message: 'User created successfully'
       });
+      next();
     } catch (error) {
       next(error); // Pass errors to the error-handling middleware
     }
@@ -26,33 +28,29 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> => {
+  ): Promise<void> => {
     try {
-      const hashed_password = await this.UserService.check_emailId(req.body.emailId);
-      if (!hashed_password) {
-          res.status(HttpStatus.UNAUTHORIZED).json({
-            code: HttpStatus.UNAUTHORIZED,
-            message: 'Email ID not present.'
+      const validate = await this.UserService.Match_Email_Password(req.body.emailId, req.body.password);
+      if(validate){
+        const generate_Token = await this.UserService.generateToken(req.body);
+        const new_data = {generate_Token, ...req.body};
+        res.status(HttpStatus.OK).json({
+          code: HttpStatus.OK,
+          data: new_data,
+          message: 'Logged in Successfully 🚀🚀🚀'
+        });
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json({
+          code: HttpStatus.BAD_REQUEST,
+          data: "",
+          message: 'Invalid Email or Password.'
         });
       }
-
-      const match_password = await this.UserService.password_check(req.body.password, hashed_password);
-      if (!match_password) {
-        res.status(HttpStatus.UNAUTHORIZED).json({
-          code: HttpStatus.UNAUTHORIZED,
-          message: 'Password not matched.'
-        });
-      }
-
-      res.status(HttpStatus.OK).json({
-        code: HttpStatus.OK,
-        data: '',
-        message: 'Logged in Successfully 🚀🚀🚀'
-      });
-    } catch (error) {
-      next(error); // Pass errors to the error-handling middleware
+    }catch(error){
+      next(error);
+    }
     }
   };
-}
+
 
 export default UserController;

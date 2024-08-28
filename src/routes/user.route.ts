@@ -18,7 +18,7 @@ class UserRoutes {
 
     //route to create a new user
     this.router.post(
-      '/signUp',
+      '',
       this.UserValidator.signUpValidate,
       this.Hashing.getEncryptMiddleware(),
       this.UserController.signUp
