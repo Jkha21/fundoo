@@ -25,7 +25,7 @@ class UserService {
 
   public generateToken = async(body: Object): Promise<String> => {
     const payload = body;
-    const secretKey = "Alaska_to_Serbia";
+    const secretKey = process.env.SECRET_KEY;
     const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});
     return token 
   }

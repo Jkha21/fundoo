@@ -11,7 +11,7 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const data = await this.UserService.signUp(req.body);
+      const _ = await this.UserService.signUp(req.body);
       const {password, ...rest_data} = req.body;
       res.status(HttpStatus.CREATED).json({
         code: HttpStatus.CREATED,
@@ -35,7 +35,7 @@ class UserController {
         const generate_Token = await this.UserService.generateToken(req.body);
         const new_data = {generate_Token, ...req.body};
         res.status(HttpStatus.OK).json({
-          code: HttpStatus.OK,
+          code: HttpStatus.OK ,
           data: new_data,
           message: 'Logged in Successfully 🚀🚀🚀'
         });
@@ -54,3 +54,4 @@ class UserController {
 
 
 export default UserController;
+
