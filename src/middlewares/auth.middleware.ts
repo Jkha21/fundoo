@@ -33,3 +33,7 @@ export const userAuth = async (
     next(error);
   }
 };
+
+// firstName
+// token
+// email

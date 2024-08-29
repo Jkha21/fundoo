@@ -30,13 +30,17 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const validate = await this.UserService.Match_Email_Password(req.body.emailId, req.body.password);
-      if(validate){
+      const user = await this.UserService.Match_Email_Password(req.body.emailId, req.body.password);
+      if(user){
         const generate_Token = await this.UserService.generateToken(req.body);
-        const new_data = {generate_Token, ...req.body};
+        const {firstName, emailId, ...rest_data} = user;
         res.status(HttpStatus.OK).json({
           code: HttpStatus.OK ,
-          data: new_data,
+          data: {
+            firstName,
+            emailId,
+            generate_Token
+          },
           message: 'Logged in Successfully 🚀🚀🚀'
         });
       } else {

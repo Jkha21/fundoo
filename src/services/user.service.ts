@@ -11,12 +11,12 @@ class UserService {
     return data;
   };
 
-  public Match_Email_Password = async (emailId: string, password: string): Promise<Boolean> => {
+  public Match_Email_Password = async (emailId: string, password: string): Promise<any> => {
     const user = (await User.findOne({emailId}).exec());
     if(user){
       const validate = await bcrypt.compare(password, user.password);
       if (validate){
-        return true;
+        return user;
       }
       return false;
     }
