@@ -25,8 +25,8 @@ export const userAuth = async (
       };
     bearerToken = bearerToken.split(' ')[1];
 
-    const { user }: any = await jwt.verify(bearerToken, process.env.SECRET_KEY);
-    res.locals.user = user;
+    const  user : any = await jwt.verify(bearerToken, process.env.SECRET_KEY);
+    req.body.UserID = user._id;
     res.locals.token = bearerToken;
     next();
   } catch (error) {
@@ -34,6 +34,3 @@ export const userAuth = async (
   }
 };
 
-// firstName
-// token
-// email

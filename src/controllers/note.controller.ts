@@ -10,15 +10,13 @@ class NoteController {
         res: Response,
         next: NextFunction
     ):  Promise<void> => {
-        try{
+        try{            
             const create_note = await this.NoteService.Add(req.body);
             res.status(HttpStatus.CREATED).json({
                 code: HttpStatus.CREATED,
-                data: create_note,
+                data: res.locals.token,
                 message: 'Created the note'
-                
             });
-            next();
         }catch(error){
             next(error);
         }
@@ -31,10 +29,11 @@ class NoteController {
     ):  Promise<void> => {
         try{
             const fetch_note = await this.NoteService.Read(req.body);
+            console.log(fetch_note);
             if(fetch_note){
                 res.status(HttpStatus.CREATED).json({
                     code: HttpStatus.CREATED,
-                    data: "",
+                    data: req.body,
                     message: 'Fetched the note'    
                 });
             } else{
@@ -44,7 +43,6 @@ class NoteController {
                     message: 'Note not found'    
                 });
             }
-            next();
         }catch(error){
             next(error);
         }
@@ -61,9 +59,7 @@ class NoteController {
                 code: HttpStatus.CREATED,
                 data: update_note,
                 message: 'Updated the note'
-                
             });
-            next();
         }catch(error){
             next(error);
         }
@@ -76,13 +72,19 @@ class NoteController {
     ):  Promise<void> => {
         try{
             const delete_note = await this.NoteService.delete(req.body);
-            res.status(HttpStatus.CREATED).json({
-                code: HttpStatus.CREATED,
-                data: delete_note,
-                message: 'Deleted the note'
-                
-            });
-            next();
+            if(delete_note){
+                res.status(HttpStatus.CREATED).json({
+                    code: HttpStatus.CREATED,
+                    data: delete_note,
+                    message: 'Deleted the note'
+                });
+            } else{
+                res.status(HttpStatus.BAD_REQUEST).json({
+                    code: HttpStatus.BAD_REQUEST,
+                    data: "",
+                    message: 'Deletion failed'
+                });
+            }
         }catch(error){
             next(error);
         }

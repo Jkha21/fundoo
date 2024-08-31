@@ -3,6 +3,9 @@ import { INote } from '../interfaces/note.interface';
 
 
 class NoteService {
+  upsert(body: any) {
+      throw new Error('Method not implemented.');
+  }
 
   //create new Note
   public Add = async (body: INote): Promise<Object> => {

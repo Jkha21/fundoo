@@ -13,6 +13,7 @@ class UserService {
 
   public Match_Email_Password = async (emailId: string, password: string): Promise<any> => {
     const user = (await User.findOne({emailId}).exec());
+    console.log(user);
     if(user){
       const validate = await bcrypt.compare(password, user.password);
       if (validate){
@@ -23,10 +24,9 @@ class UserService {
     return false;
   };
 
-  public generateToken = async(body: Object): Promise<String> => {
-    const payload = body;
+  public generateToken = async(body: any): Promise<String> => {
     const secretKey = process.env.SECRET_KEY;
-    const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});
+    const token = jwt.sign(body, secretKey, {expiresIn: '1h'});
     return token 
   }
 
