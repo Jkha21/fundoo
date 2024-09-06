@@ -2,6 +2,7 @@
 import HttpStatus from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import TokenMiddleware from './token.middleware';
 
 /**
  * Middleware to authenticate if user has a valid Authorization token
@@ -25,7 +26,8 @@ export const userAuth = async (
       };
     bearerToken = bearerToken.split(' ')[1];
 
-    const  user : any = await jwt.verify(bearerToken, process.env.SECRET_KEY);
+    // const  user : any = await jwt.verify(bearerToken, process.env.SECRET_KEY);
+    const user: any = await TokenMiddleware.verifyToken(bearerToken, process.env.SECRET_KEY_0);
     req.body.UserID = user._id;
     res.locals.token = bearerToken;
     next();

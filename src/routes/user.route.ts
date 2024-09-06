@@ -30,7 +30,21 @@ class UserRoutes {
       this.UserValidator.loginValidate,
       this.UserController.login,
     )
+
+    this.router.post(
+      '/forget_pwd',
+      this.UserValidator.emailValidate,
+      this.UserController.forgetPassword
+    )
+
+    this.router.post(
+      '/reset_pwd',
+      this.UserValidator.resetPasswordValidate,
+      this.UserController.resetPassword
+    )
+
   };
+
 
   public getRoutes = (): IRouter => {
     return this.router;

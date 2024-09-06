@@ -1,6 +1,7 @@
 import HttpStatus from 'http-status-codes';
 import userService from '../services/user.service';
 import { Request, Response, NextFunction } from 'express';
+import TokenMiddleware from '../middlewares/token.middleware';
 
 class UserController {
   public UserService = new userService();
@@ -18,9 +19,11 @@ class UserController {
         data: rest_data,
         message: 'User created successfully'
       });
-      next();
     } catch (error) {
-      next(error); // Pass errors to the error-handling middleware
+      res.status(HttpStatus.BAD_REQUEST).json({
+        code: HttpStatus.BAD_REQUEST,
+        message: `${error}`
+      });
     }
   };
 
@@ -30,10 +33,10 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const user = await this.UserService.Match_Email_Password(req.body.emailId, req.body.password);
+      const user = await this.UserService.login_check(req.body.emailId, req.body.password);
       if(user){
         const {firstName, emailId, _id, ...rest_data} = user;
-        const generate_Token = await this.UserService.generateToken({emailId, _id});
+        const generate_Token = await TokenMiddleware.generateToken({emailId: emailId, _id: _id}, process.env.SECRET_KEY_0, "1h");
         res.status(HttpStatus.OK).json({
           code: HttpStatus.OK ,
           data: {
@@ -43,17 +46,51 @@ class UserController {
           },
           message: 'Logged in Successfully 🚀🚀🚀'
         });
-      } else {
+      } 
+    }catch(error){
+      res.status(HttpStatus.NOT_FOUND).json({
+        code: HttpStatus.NOT_FOUND,
+        message: 'Invalid Email or Password.'
+      });
+    }
+    }
+
+    public forgetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+      try {
+        const resetToken = await this.UserService.forgetPassword(req.body.emailId);
+        res.status(HttpStatus.OK).json({
+          code: HttpStatus.OK,
+          data: resetToken ,
+          message: 'Password reset token generated',
+        });
+      } 
+      catch (error) {
         res.status(HttpStatus.BAD_REQUEST).json({
           code: HttpStatus.BAD_REQUEST,
           data: "",
-          message: 'Invalid Email or Password.'
+          message: error.message,
         });
       }
-    }catch(error){
-      next(error);
-    }
-    }
+    };
+   
+    public resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+      try {
+        const { token, newPassword } = req.body;
+        await this.UserService.resetPassword(token, newPassword);
+        res.status(HttpStatus.OK).json({
+          code: HttpStatus.OK,
+          data: "",
+          message: 'Password reset successful',
+        });
+      } catch (error) {
+        res.status(HttpStatus.BAD_REQUEST).json({
+          code: HttpStatus.BAD_REQUEST,
+          data: "",
+          message: error.message,
+        });
+      }
+    };
+  
   };
 
 

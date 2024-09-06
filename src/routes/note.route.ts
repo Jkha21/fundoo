@@ -14,32 +14,53 @@ class NoteRoutes {
 
     private routes = () => {
         this.router.post(
-            '/create',
+            '',
             userAuth,
-            this.NoteValidater.note_check,
-            this.NoteController.create
+            this.NoteValidater.create_validate,
+            this.NoteController.createNote
         );
 
         this.router.get(
-            '/fetch',
+            '/findNote/:id',
             userAuth,
-            this.NoteValidater.note_check,
-            this.NoteController.fetch
+            this.NoteValidater.validateIdMiddleware,
+            this.NoteController.findNoteById
         );
 
         this.router.put(
-            '/update',
+            '/updateNote/:id',
             userAuth,
-            this.NoteValidater.note_check,
-            this.NoteController.update
+            [this.NoteValidater.validateIdMiddleware, this.NoteValidater.update_validate],
+            this.NoteController.updateNoteById
         );
 
         this.router.delete(
-            '/del',
+            '/delNote/:id',
             userAuth,
-            this.NoteValidater.note_check,
-            this.NoteController.delete
+            this.NoteValidater.validateIdMiddleware,
+            this.NoteController.deleteNoteById
         );
+
+        this.router.get(
+            '/allNotes',
+            userAuth,
+            this.NoteController.findAllNotesByUserId
+        );
+
+        this.router.put(
+            '/isArchive/:id',
+            userAuth,
+            this.NoteValidater.validateIdMiddleware,
+            this.NoteController.isArchived
+        );
+
+        this.router.put(
+            '/isTrash/:id',
+            userAuth,
+            this.NoteValidater.validateIdMiddleware,
+            this.NoteController.isDeleted
+        );
+        
     }
 
     public getRoutes = (): Router => {

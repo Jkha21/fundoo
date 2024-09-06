@@ -9,9 +9,10 @@ import routes from './routes';
 import Database from './config/database';
 import ErrorHandler from './middlewares/error.middleware';
 import Logger from './config/logger';
-
+import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 
+let swaggerdocument: any = require('../src/swagger/openapi.json');
 class App {
   public app: Application;
   public host: string | number;
@@ -50,6 +51,7 @@ class App {
 
   public initializeRoutes(): void {
     this.app.use(`/api/`, routes());
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerdocument));
   }
 
   public initializeErrorHandlers(): void {
