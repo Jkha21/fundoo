@@ -1,5 +1,5 @@
 {
-    "openapi": "2.0.0",
+    "openapi": "3.1.0",
     "info": {
         "title": "Google Keep",
         "description": "This is the replica of google keep.User can register and login, user can do request for forgot password and he can reset password using that shared credentionals. User can login and perform note CRUD."

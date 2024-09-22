@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "NodeNext",
     "allowJs": true,
     "outDir": "./build",
     "rootDir": "./src",
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*", "sh.js"],
-  "exclude": ["node_modules", "src/tests"]
+  "exclude": ["node_modules", "src/tests"]  
 }

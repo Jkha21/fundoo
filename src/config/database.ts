@@ -10,7 +10,7 @@ class Database {
     // Replace database value in the .env file with your database config url
     this.DATABASE =
       process.env.NODE_ENV === 'test'
-        ? process.env.DATABASE_TEST
+        ? process.env.DATABASE
         : process.env.DATABASE;
 
     this.logger = Logger.logger;
